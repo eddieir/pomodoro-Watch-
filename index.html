@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4eee7" />
+  <meta name="description" content="Tomato Watch — a calm, elegant focus timer." />
+  <title>Tomato Watch</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Tomato Watch home">
+        <span class="brand-mark" aria-hidden="true">●</span>
+        <span>Tomato Watch</span>
+      </a>
+      <div class="top-actions">
+        <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle evening mode" title="Evening mode">
+          <span aria-hidden="true">☾</span>
+        </button>
+        <button id="settingsButton" class="icon-button" type="button" aria-label="Open settings" title="Settings">
+          <span aria-hidden="true">⋯</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero-grid">
+      <article class="timer-panel" aria-labelledby="modeTitle">
+        <div class="mode-tabs" role="tablist" aria-label="Timer mode">
+          <button class="mode-tab active" data-mode="focus" role="tab" aria-selected="true">Focus</button>
+          <button class="mode-tab" data-mode="short" role="tab" aria-selected="false">Soft break</button>
+          <button class="mode-tab" data-mode="long" role="tab" aria-selected="false">Long break</button>
+        </div>
+
+        <div class="timer-stage">
+          <svg class="timer-ring" viewBox="0 0 280 280" aria-hidden="true">
+            <circle class="ring-track" cx="140" cy="140" r="126"></circle>
+            <circle id="progressRing" class="ring-progress" cx="140" cy="140" r="126"></circle>
+          </svg>
+          <div class="timer-copy">
+            <p id="modeEyebrow" class="eyebrow">ONE THING AT A TIME</p>
+            <h1 id="timeDisplay" class="time-display">25:00</h1>
+            <p id="modeTitle" class="mode-title">Focus gently.</p>
+          </div>
+        </div>
+
+        <div class="primary-controls">
+          <button id="resetButton" class="round-control secondary" type="button" aria-label="Reset timer" title="Reset">↺</button>
+          <button id="startPauseButton" class="start-button" type="button">Start</button>
+          <button id="skipButton" class="round-control secondary" type="button" aria-label="Skip session" title="Skip">→</button>
+        </div>
+
+        <div class="focus-card">
+          <label class="focus-label" for="focusInput">TODAY, I’M GIVING MY ATTENTION TO</label>
+          <div class="focus-input-row">
+            <input id="focusInput" type="text" maxlength="90" placeholder="Pharmacology — receptors" autocomplete="off" />
+            <span class="edit-glyph" aria-hidden="true">✎</span>
+          </div>
+        </div>
+      </article>
+
+      <aside class="side-column">
+        <section class="quote-card card">
+          <p class="card-kicker">A QUIET REMINDER</p>
+          <blockquote id="quoteText">You do not need to finish everything. Just stay with this moment.</blockquote>
+          <button id="newQuoteButton" class="text-button" type="button">Another thought</button>
+        </section>
+
+        <section class="today-card card">
+          <div class="section-heading">
+            <div>
+              <p class="card-kicker">TODAY</p>
+              <h2>Small progress counts.</h2>
+            </div>
+            <span id="dayLabel" class="day-pill">Wednesday</span>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat">
+              <strong id="sessionsCount">0</strong>
+              <span>focus sessions</span>
+            </div>
+            <div class="stat">
+              <strong id="focusMinutes">0</strong>
+              <span>focus minutes</span>
+            </div>
+          </div>
+
+          <div class="goal-block">
+            <div class="goal-meta">
+              <span>Daily rhythm</span>
+              <span id="goalText">0 / 4</span>
+            </div>
+            <div class="goal-track" aria-hidden="true"><span id="goalBar"></span></div>
+          </div>
+        </section>
+
+        <section class="ritual-card card">
+          <p class="card-kicker">BETWEEN SESSIONS</p>
+          <div class="ritual-list">
+            <button class="ritual-item" data-ritual="water" type="button"><span>01</span><strong>Drink water</strong><em>done</em></button>
+            <button class="ritual-item" data-ritual="stretch" type="button"><span>02</span><strong>Stretch shoulders</strong><em>done</em></button>
+            <button class="ritual-item" data-ritual="window" type="button"><span>03</span><strong>Look away from the screen</strong><em>done</em></button>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <footer class="footer-note">
+      <span>Made for quiet focus.</span>
+      <button id="installButton" class="text-button hidden" type="button">Add to home screen</button>
+    </footer>
+  </main>
+
+  <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
+  <aside id="settingsDrawer" class="settings-drawer" aria-hidden="true" aria-label="Timer settings">
+    <div class="drawer-header">
+      <div>
+        <p class="card-kicker">YOUR RHYTHM</p>
+        <h2>Settings</h2>
+      </div>
+      <button id="closeSettingsButton" class="icon-button" type="button" aria-label="Close settings">×</button>
+    </div>
+
+    <form id="settingsForm" class="settings-form">
+      <label>Focus minutes <input id="focusDuration" type="number" min="1" max="120" inputmode="numeric" /></label>
+      <label>Soft break <input id="shortDuration" type="number" min="1" max="60" inputmode="numeric" /></label>
+      <label>Long break <input id="longDuration" type="number" min="1" max="90" inputmode="numeric" /></label>
+      <label>Long break after <input id="longInterval" type="number" min="2" max="12" inputmode="numeric" /></label>
+      <label>Daily focus goal <input id="dailyGoal" type="number" min="1" max="16" inputmode="numeric" /></label>
+
+      <div class="toggle-row">
+        <div><strong>Completion sound</strong><span>A soft chime at the end</span></div>
+        <button id="soundToggle" class="switch" type="button" role="switch" aria-checked="true"><span></span></button>
+      </div>
+      <div class="toggle-row">
+        <div><strong>Auto-start breaks</strong><span>Flow into rest automatically</span></div>
+        <button id="autoBreakToggle" class="switch" type="button" role="switch" aria-checked="false"><span></span></button>
+      </div>
+
+      <button class="save-settings" type="submit">Save rhythm</button>
+      <button id="resetDayButton" class="danger-text" type="button">Reset today’s progress</button>
+    </form>
+  </aside>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
