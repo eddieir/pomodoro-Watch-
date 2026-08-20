@@ -23,11 +23,11 @@ const quotes = [
   'Elegance can live inside discipline too.'
 ];
 
-// Remote ambience is loaded only after a user presses Start.
-// Mixkit provides these royalty-free sound effects for web use.
+// Loaded only after a user presses Start.
+// Both recordings are public-domain files served by Wikimedia Commons.
 const AMBIENCE_SOURCES = {
-  rain: 'https://assets.mixkit.co/sfx/preview/mixkit-rain-ambience-1244.mp3',
-  forest: 'https://assets.mixkit.co/sfx/preview/mixkit-forest-ambience-1650.mp3'
+  rain: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg',
+  forest: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Walk_in_the_rainforest.ogg'
 };
 
 const $ = (id) => document.getElementById(id);
@@ -76,11 +76,11 @@ function ensureAmbience() {
     track.loop = true;
     track.preload = 'none';
     track.playsInline = true;
+    track.crossOrigin = 'anonymous';
   });
 
-  // Rain is dominant; forest/birds sit behind it for a natural jungle layer.
-  rain.volume = 0.30;
-  forest.volume = 0.16;
+  rain.volume = 0.28;
+  forest.volume = 0.18;
 
   ambience = { rain, forest };
   return ambience;
@@ -93,7 +93,6 @@ async function playAmbience() {
   try {
     await Promise.all([tracks.rain.play(), tracks.forest.play()]);
   } catch (error) {
-    // The timer should never fail just because a remote audio host is unavailable.
     pauseAmbience();
     if (!ambienceLoadFailed) {
       ambienceLoadFailed = true;
@@ -150,8 +149,6 @@ function renderTimer() {
 function startTimer() {
   if (timer) return;
   els.start.textContent = 'Pause';
-
-  // Because Start is a direct user gesture, browsers allow the remote ambience to begin here.
   playAmbience();
 
   const target = Date.now() + remaining * 1000;
