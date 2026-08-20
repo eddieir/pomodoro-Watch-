@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tomato-watch-daisy-v4';
+const CACHE_NAME = 'tomato-watch-daisy-v5';
 const ASSETS = ['/', '/index.html', '/styles.css', '/app.js', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', event => {
