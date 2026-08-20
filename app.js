@@ -13,11 +13,14 @@ const defaults = {
 };
 
 const quotes = [
-  'You do not need to finish everything. Just stay with this moment.',
-  'A gentle pace can still take you very far.',
-  'Attention is enough. Perfection is not required.',
-  'Make this one small thing beautiful by being fully here.',
-  'Rest is part of the work, not a reward for surviving it.'
+  'Softness is not distraction. It is a way of staying present beautifully.',
+  'You do not need a hard mood to do meaningful work.',
+  'A gentle rhythm can still create something striking.',
+  'One flower at a time still becomes a field.',
+  'Resting your mind is part of making beautiful work.',
+  'Stay with this moment. The rest can bloom later.',
+  'Quiet progress is still progress.',
+  'Elegance can live inside discipline too.'
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -64,7 +67,11 @@ function setMode(next, autoStart = false) {
     btn.classList.toggle('active', active);
     btn.setAttribute('aria-selected', String(active));
   });
-  const titles = { focus: ['ONE THING AT A TIME', 'Focus gently.'], short: ['A SMALL RESET', 'Soften your attention.'], long: ['MAKE SPACE', 'Take a real break.'] };
+  const titles = {
+    focus: ['BLOOM WHERE YOUR ATTENTION IS', 'Stay with one lovely task.'],
+    short: ['A LITTLE PETAL BREAK', 'Loosen your shoulders and breathe.'],
+    long: ['GARDEN REST', 'Pause longer. Let your mind soften.']
+  };
   $('modeEyebrow').textContent = titles[mode][0];
   $('modeTitle').textContent = titles[mode][1];
   renderTimer();
@@ -104,13 +111,13 @@ function resetTimer() {
   stopTimer();
   remaining = total;
   renderTimer();
-  showToast('Timer reset');
+  showToast('A fresh start.');
 }
 
 function skipSession() {
   const next = mode === 'focus' ? 'short' : 'focus';
   setMode(next);
-  showToast(mode === 'focus' ? 'Back to focus' : 'Break started');
+  showToast(mode === 'focus' ? 'Back to your little bloom.' : 'Petal break started.');
 }
 
 function completeSession() {
@@ -120,11 +127,11 @@ function completeSession() {
     state.today.focusMinutes += state.durations.focus;
     saveState();
     renderStats();
-    notify('Focus complete', 'You stayed with it. Time to soften for a moment.');
+    notify('A daisy bloomed ✿', 'You stayed with it. Time for a soft little pause.');
     const next = state.today.sessions % state.longInterval === 0 ? 'long' : 'short';
     setMode(next, state.autoBreak);
   } else {
-    notify('Break complete', 'Come back gently when you are ready.');
+    notify('Rest complete', 'Come back gently when you are ready.');
     setMode('focus');
   }
 }
@@ -132,7 +139,7 @@ function completeSession() {
 function notify(title, body) {
   chime();
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
-  if (Notification.permission === 'granted') new Notification(title, { body, icon: '/icon.svg' });
+  if ('Notification' in window && Notification.permission === 'granted') new Notification(title, { body, icon: '/icon.svg' });
   showToast(title);
 }
 
@@ -145,10 +152,10 @@ function chime() {
     gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.9);
     gain.connect(ctx.destination);
-    [523.25, 659.25].forEach((freq, i) => {
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
       const osc = ctx.createOscillator();
       osc.type = 'sine'; osc.frequency.value = freq; osc.connect(gain);
-      osc.start(ctx.currentTime + i * 0.13); osc.stop(ctx.currentTime + 0.9);
+      osc.start(ctx.currentTime + i * 0.12); osc.stop(ctx.currentTime + 0.9);
     });
   } catch {}
 }
@@ -196,7 +203,7 @@ function saveSettings(e) {
   setMode(mode);
   renderStats();
   closeSettings();
-  showToast('Your rhythm is saved');
+  showToast('Your daisy rhythm is saved.');
 }
 
 function clamp(n, min, max) { return Math.max(min, Math.min(max, Number.isFinite(n) ? n : min)); }
@@ -245,7 +252,7 @@ function init() {
     state.today = { date: localDateKey(), sessions: 0, focusMinutes: 0, rituals: {} };
     saveState(); renderStats();
     document.querySelectorAll('.ritual-item').forEach(btn => btn.classList.remove('done'));
-    showToast('Today has been reset');
+    showToast('Today’s garden is fresh again.');
   });
   document.querySelectorAll('.ritual-item').forEach(btn => btn.addEventListener('click', () => {
     const key = btn.dataset.ritual;
