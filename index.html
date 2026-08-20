@@ -8,7 +8,7 @@
   <title>Tomato Watch</title>
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css?v=7" />
 </head>
 <body>
   <div class="sky-glow glow-one" aria-hidden="true"></div>
@@ -25,12 +25,8 @@
     <header class="topbar">
       <a class="brand" href="#" aria-label="Tomato Watch home">
         <span class="brand-flower" aria-hidden="true">✿</span>
-        <span class="brand-text">
-          <strong>Tomato Watch</strong>
-          <em>Daisy focus ritual</em>
-        </span>
+        <span class="brand-text"><strong>Tomato Watch</strong><em>Daisy focus ritual</em></span>
       </a>
-
       <div class="top-actions">
         <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle evening garden mode" title="Evening garden mode"><span aria-hidden="true">☾</span></button>
         <button id="settingsButton" class="icon-button" type="button" aria-label="Open settings" title="Settings"><span aria-hidden="true">⋯</span></button>
@@ -39,11 +35,7 @@
 
     <section class="hero-grid">
       <article class="timer-panel card-soft" aria-labelledby="modeTitle">
-        <div class="panel-intro">
-          <p class="micro-copy">SLOW BEAUTIFUL FOCUS</p>
-          <h1>Let one little thing bloom.</h1>
-        </div>
-
+        <div class="panel-intro"><p class="micro-copy">SLOW BEAUTIFUL FOCUS</p><h1>Let one little thing bloom.</h1></div>
         <div class="mode-tabs" role="tablist" aria-label="Timer mode">
           <button class="mode-tab active" data-mode="focus" role="tab" aria-selected="true">Focus</button>
           <button class="mode-tab" data-mode="short" role="tab" aria-selected="false">Petal break</button>
@@ -71,10 +63,7 @@
 
         <div class="focus-card">
           <label class="focus-label" for="focusInput">TODAY I WANT TO BLOOM THIS</label>
-          <div class="focus-input-row">
-            <input id="focusInput" type="text" maxlength="90" placeholder="Edit photos / study / create" autocomplete="off" />
-            <span class="edit-glyph" aria-hidden="true">✎</span>
-          </div>
+          <div class="focus-input-row"><input id="focusInput" type="text" maxlength="90" placeholder="Edit photos / study / create" autocomplete="off" /><span class="edit-glyph" aria-hidden="true">✎</span></div>
         </div>
       </article>
 
@@ -86,23 +75,12 @@
         </section>
 
         <section class="today-card card-soft">
-          <div class="section-heading">
-            <div>
-              <p class="card-kicker">TODAY’S GARDEN</p>
-              <h2>Quiet progress is still progress.</h2>
-            </div>
-            <span id="dayLabel" class="day-pill">Wednesday</span>
-          </div>
-
+          <div class="section-heading"><div><p class="card-kicker">TODAY’S GARDEN</p><h2>Quiet progress is still progress.</h2></div><span id="dayLabel" class="day-pill">Wednesday</span></div>
           <div class="stat-grid">
             <div class="stat"><strong id="sessionsCount">0</strong><span>daisies finished</span></div>
             <div class="stat"><strong id="focusMinutes">0</strong><span>focus minutes</span></div>
           </div>
-
-          <div class="goal-block">
-            <div class="goal-meta"><span>Daisy goal</span><span id="goalText">0 / 4</span></div>
-            <div class="goal-track" aria-hidden="true"><span id="goalBar"></span></div>
-          </div>
+          <div class="goal-block"><div class="goal-meta"><span>Daisy goal</span><span id="goalText">0 / 4</span></div><div class="goal-track" aria-hidden="true"><span id="goalBar"></span></div></div>
         </section>
 
         <section class="ritual-card card-soft">
@@ -116,41 +94,92 @@
       </aside>
     </section>
 
-    <footer class="footer-note">
-      <span>Made for gentle concentration and beautiful little wins.</span>
-      <button id="installButton" class="text-button hidden" type="button">Add to home screen</button>
-    </footer>
+    <footer class="footer-note"><span>Made for gentle concentration and beautiful little wins.</span><button id="installButton" class="text-button hidden" type="button">Add to home screen</button></footer>
   </main>
 
   <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
   <aside id="settingsDrawer" class="settings-drawer" aria-hidden="true" aria-label="Timer settings">
-    <div class="drawer-header">
-      <div><p class="card-kicker">YOUR RHYTHM</p><h2>Daisy settings</h2></div>
-      <button id="closeSettingsButton" class="icon-button" type="button" aria-label="Close settings">×</button>
-    </div>
-
+    <div class="drawer-header"><div><p class="card-kicker">YOUR RHYTHM</p><h2>Daisy settings</h2></div><button id="closeSettingsButton" class="icon-button" type="button" aria-label="Close settings">×</button></div>
     <form id="settingsForm" class="settings-form">
       <label>Focus minutes <input id="focusDuration" type="number" min="1" max="120" inputmode="numeric" /></label>
       <label>Petal break <input id="shortDuration" type="number" min="1" max="60" inputmode="numeric" /></label>
       <label>Garden rest <input id="longDuration" type="number" min="1" max="90" inputmode="numeric" /></label>
       <label>Garden rest after <input id="longInterval" type="number" min="2" max="12" inputmode="numeric" /></label>
       <label>Daily daisy goal <input id="dailyGoal" type="number" min="1" max="16" inputmode="numeric" /></label>
-
-      <div class="toggle-row">
-        <div><strong>Completion sound</strong><span>A soft floral chime at the end</span></div>
-        <button id="soundToggle" class="switch" type="button" role="switch" aria-checked="true"><span></span></button>
-      </div>
-      <div class="toggle-row">
-        <div><strong>Auto-start breaks</strong><span>Flow into rest automatically</span></div>
-        <button id="autoBreakToggle" class="switch" type="button" role="switch" aria-checked="false"><span></span></button>
-      </div>
-
+      <div class="toggle-row"><div><strong>Completion sound</strong><span>A soft floral chime at the end</span></div><button id="soundToggle" class="switch" type="button" role="switch" aria-checked="true"><span></span></button></div>
+      <div class="toggle-row"><div><strong>Auto-start breaks</strong><span>Flow into rest automatically</span></div><button id="autoBreakToggle" class="switch" type="button" role="switch" aria-checked="false"><span></span></button></div>
       <button class="save-settings" type="submit">Save my rhythm</button>
       <button id="resetDayButton" class="danger-text" type="button">Reset today’s garden</button>
     </form>
   </aside>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="/app.js" defer></script>
+
+  <script>
+    // Audio unlock runs in the capture phase, directly inside the user click.
+    // This guarantees Chrome grants Web Audio permission before other handlers.
+    (() => {
+      let ctx = null;
+      let source = null;
+      let gain = null;
+      let filter = null;
+
+      function buildRain() {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        ctx = ctx || new AudioCtx();
+        if (source) return;
+
+        const seconds = 5;
+        const length = Math.floor(ctx.sampleRate * seconds);
+        const buffer = ctx.createBuffer(2, length, ctx.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+          const data = buffer.getChannelData(ch);
+          let brown = 0;
+          for (let i = 0; i < length; i++) {
+            const white = Math.random() * 2 - 1;
+            brown = brown * 0.96 + white * 0.04;
+            data[i] = white * 0.56 + brown * 0.44;
+          }
+        }
+
+        source = ctx.createBufferSource();
+        gain = ctx.createGain();
+        filter = ctx.createBiquadFilter();
+        source.buffer = buffer;
+        source.loop = true;
+        filter.type = 'bandpass';
+        filter.frequency.value = 2400 + Math.random() * 1600;
+        filter.Q.value = 0.32;
+        gain.gain.value = 0.42;
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        source.start();
+      }
+
+      async function startRain() {
+        buildRain();
+        if (ctx && ctx.state !== 'running') {
+          try { await ctx.resume(); } catch (_) {}
+        }
+      }
+
+      function pauseRain() {
+        if (ctx && ctx.state === 'running') ctx.suspend().catch(() => {});
+      }
+
+      window.__tomatoAudio = { startRain, pauseRain };
+
+      document.getElementById('startPauseButton').addEventListener('click', function () {
+        if (this.textContent.trim() === 'Start') startRain();
+        else pauseRain();
+      }, true);
+
+      document.getElementById('resetButton').addEventListener('click', pauseRain, true);
+      document.getElementById('skipButton').addEventListener('click', pauseRain, true);
+    })();
+  </script>
+  <script src="/app.js?v=7" defer></script>
 </body>
 </html>
