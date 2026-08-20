@@ -1,11 +1,11 @@
 {
-  "name": "Tomato Watch",
-  "short_name": "Tomato",
-  "description": "A calm focus timer for quiet, intentional study sessions.",
+  "name": "Tomato Watch — Daisy Focus",
+  "short_name": "Tomato Watch",
+  "description": "A gentle daisy-themed focus timer for calm, beautiful concentration.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f4eee7",
-  "theme_color": "#f4eee7",
+  "background_color": "#f7f2e8",
+  "theme_color": "#f7f2e8",
   "icons": [
     {
       "src": "/icon.svg",
