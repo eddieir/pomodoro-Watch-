@@ -23,11 +23,18 @@ const quotes = [
   'Elegance can live inside discipline too.'
 ];
 
-// Loaded only after a user presses Start.
-// Both recordings are public-domain files served by Wikimedia Commons.
-const AMBIENCE_SOURCES = {
-  rain: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Rain.ogg',
-  forest: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Walk_in_the_rainforest.ogg'
+const AMBIENCE_LIBRARY = {
+  rain: [
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rain.ogg',
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/SV100344.ogg',
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rain_(1).ogg',
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rainthunderandbirds.ogg'
+  ],
+  forest: [
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Walk_in_the_rainforest.ogg',
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/Birds_forest.ogg',
+    'https://commons.wikimedia.org/wiki/Special:Redirect/file/20090610_0_ambience.ogg'
+  ]
 };
 
 const $ = (id) => document.getElementById(id);
@@ -47,6 +54,7 @@ let timer = null;
 let deferredPrompt = null;
 let ambience = null;
 let ambienceLoadFailed = false;
+let lastMixKey = sessionStorage.getItem('tomato-watch-last-mix') || '';
 
 function localDateKey() {
   const d = new Date();
@@ -66,17 +74,43 @@ function loadState() {
 
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
+function randomIndex(length) {
+  return Math.floor(Math.random() * length);
+}
+
+function chooseAmbienceMix() {
+  let rainIndex = 0;
+  let forestIndex = 0;
+  let key = '';
+  let attempts = 0;
+
+  do {
+    rainIndex = randomIndex(AMBIENCE_LIBRARY.rain.length);
+    forestIndex = randomIndex(AMBIENCE_LIBRARY.forest.length);
+    key = `${rainIndex}:${forestIndex}`;
+    attempts += 1;
+  } while (key === lastMixKey && attempts < 12);
+
+  lastMixKey = key;
+  sessionStorage.setItem('tomato-watch-last-mix', key);
+
+  return {
+    rain: AMBIENCE_LIBRARY.rain[rainIndex],
+    forest: AMBIENCE_LIBRARY.forest[forestIndex]
+  };
+}
+
 function ensureAmbience() {
   if (ambience) return ambience;
 
-  const rain = new Audio(AMBIENCE_SOURCES.rain);
-  const forest = new Audio(AMBIENCE_SOURCES.forest);
+  const mix = chooseAmbienceMix();
+  const rain = new Audio(mix.rain);
+  const forest = new Audio(mix.forest);
 
   [rain, forest].forEach(track => {
     track.loop = true;
     track.preload = 'none';
     track.playsInline = true;
-    track.crossOrigin = 'anonymous';
   });
 
   rain.volume = 0.28;
@@ -107,16 +141,19 @@ function pauseAmbience() {
   ambience.forest.pause();
 }
 
-function resetAmbience() {
+function releaseAmbience() {
   if (!ambience) return;
   pauseAmbience();
   [ambience.rain, ambience.forest].forEach(track => {
-    try { track.currentTime = 0; } catch {}
+    track.removeAttribute('src');
+    try { track.load(); } catch {}
   });
+  ambience = null;
 }
 
 function setMode(next, autoStart = false) {
   stopTimer();
+  releaseAmbience();
   mode = next;
   total = state.durations[mode] * 60;
   remaining = total;
@@ -170,14 +207,14 @@ function toggleTimer() { timer ? stopTimer() : startTimer(); }
 
 function resetTimer() {
   stopTimer();
-  resetAmbience();
+  releaseAmbience();
   remaining = total;
   renderTimer();
   showToast('A fresh start.');
 }
 
 function skipSession() {
-  resetAmbience();
+  releaseAmbience();
   const next = mode === 'focus' ? 'short' : 'focus';
   setMode(next);
   showToast(mode === 'focus' ? 'Back to your little bloom.' : 'Petal break started.');
@@ -185,6 +222,7 @@ function skipSession() {
 
 function completeSession() {
   stopTimer();
+  releaseAmbience();
   if (mode === 'focus') {
     state.today.sessions += 1;
     state.today.focusMinutes += state.durations.focus;
