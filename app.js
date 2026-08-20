@@ -23,6 +23,13 @@ const quotes = [
   'Elegance can live inside discipline too.'
 ];
 
+// Remote ambience is loaded only after a user presses Start.
+// Mixkit provides these royalty-free sound effects for web use.
+const AMBIENCE_SOURCES = {
+  rain: 'https://assets.mixkit.co/sfx/preview/mixkit-rain-ambience-1244.mp3',
+  forest: 'https://assets.mixkit.co/sfx/preview/mixkit-forest-ambience-1650.mp3'
+};
+
 const $ = (id) => document.getElementById(id);
 const els = {
   time: $('timeDisplay'), progress: $('progressRing'), start: $('startPauseButton'), reset: $('resetButton'), skip: $('skipButton'),
@@ -38,6 +45,8 @@ let remaining = state.durations.focus * 60;
 let total = remaining;
 let timer = null;
 let deferredPrompt = null;
+let ambience = null;
+let ambienceLoadFailed = false;
 
 function localDateKey() {
   const d = new Date();
@@ -56,6 +65,56 @@ function loadState() {
 }
 
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function ensureAmbience() {
+  if (ambience) return ambience;
+
+  const rain = new Audio(AMBIENCE_SOURCES.rain);
+  const forest = new Audio(AMBIENCE_SOURCES.forest);
+
+  [rain, forest].forEach(track => {
+    track.loop = true;
+    track.preload = 'none';
+    track.playsInline = true;
+  });
+
+  // Rain is dominant; forest/birds sit behind it for a natural jungle layer.
+  rain.volume = 0.30;
+  forest.volume = 0.16;
+
+  ambience = { rain, forest };
+  return ambience;
+}
+
+async function playAmbience() {
+  const tracks = ensureAmbience();
+  ambienceLoadFailed = false;
+
+  try {
+    await Promise.all([tracks.rain.play(), tracks.forest.play()]);
+  } catch (error) {
+    // The timer should never fail just because a remote audio host is unavailable.
+    pauseAmbience();
+    if (!ambienceLoadFailed) {
+      ambienceLoadFailed = true;
+      showToast('Rainforest sound could not load. Timer is still running.');
+    }
+  }
+}
+
+function pauseAmbience() {
+  if (!ambience) return;
+  ambience.rain.pause();
+  ambience.forest.pause();
+}
+
+function resetAmbience() {
+  if (!ambience) return;
+  pauseAmbience();
+  [ambience.rain, ambience.forest].forEach(track => {
+    try { track.currentTime = 0; } catch {}
+  });
+}
 
 function setMode(next, autoStart = false) {
   stopTimer();
@@ -91,6 +150,10 @@ function renderTimer() {
 function startTimer() {
   if (timer) return;
   els.start.textContent = 'Pause';
+
+  // Because Start is a direct user gesture, browsers allow the remote ambience to begin here.
+  playAmbience();
+
   const target = Date.now() + remaining * 1000;
   timer = setInterval(() => {
     remaining = Math.max(0, Math.ceil((target - Date.now()) / 1000));
@@ -103,18 +166,21 @@ function stopTimer() {
   if (timer) clearInterval(timer);
   timer = null;
   els.start.textContent = 'Start';
+  pauseAmbience();
 }
 
 function toggleTimer() { timer ? stopTimer() : startTimer(); }
 
 function resetTimer() {
   stopTimer();
+  resetAmbience();
   remaining = total;
   renderTimer();
   showToast('A fresh start.');
 }
 
 function skipSession() {
+  resetAmbience();
   const next = mode === 'focus' ? 'short' : 'focus';
   setMode(next);
   showToast(mode === 'focus' ? 'Back to your little bloom.' : 'Petal break started.');
